@@ -3,24 +3,17 @@
  * 
  * Automatically structures uploads inside Google Drive as:
  * Sindur Casting Photos / [Candidate Name] - [WhatsApp Number] / [Photos]
- * 
- * Instructions to Deploy:
- * 1. Open Google Sheets (create a new sheet or open an existing one).
- * 2. In the top menu, go to Extensions -> Apps Script.
- * 3. Replace all default code in Apps Script with this script.
- * 4. Click the "Save" icon (Floppy disk).
- * 5. Click the blue "Deploy" button (top right) -> "New deployment".
- * 6. Click the Gear icon next to "Select type" and choose "Web app".
- * 7. Set the following options:
- *    - Description: Model Registration Web App with Subfolders
- *    - Execute as: Me (your-email@gmail.com)
- *    - Who has access: Anyone (MUST be "Anyone", do NOT choose "Anyone with Google account")
- * 8. Click "Deploy", authorize permissions, and copy the Web App URL.
- * 9. Paste this URL into your Vite project's `/src/config.ts` file.
+ * And triggers a WhatsApp template message via Wati API V3.
  */
 
 // Configuration - Main folder name in Google Drive
 const MAIN_FOLDER_NAME = "Sindur Casting Photos";
+
+// Wati WhatsApp API Configuration
+const WATI_API_ENDPOINT = "https://live-mt-server.wati.io/10193024";
+const WATI_BEARER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwibmFtZWlkIjoia2VzLnNpbmR1ckBnbWFpbC5jb20iLCJlbWFpbCI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDcvMTQvMjAyNiAwNzoxMjo1NCIsInRlbmFudF9pZCI6IjEwMTkzMDI0IiwiZGJfbmFtZSI6Im10LXByb2QtVGVuYW50cyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFETUlOSVNUUkFUT1IiLCJleHAiOjI1MzQwMjMwMDgwMCwiaXNzIjoiQ2xhcmVfQUkiLCJhdWQiOiJDbGFyZV9BSSJ9.rFu5n7UUeVzvuwjs-ShneQMKdEKS-qGQ4csMNmd7yME";
+const WATI_TEMPLATE_NAME = "model_casting";
+const WATI_CHANNEL = "916235905050"; // Sender number (numbers only)
 
 function doPost(e) {
   try {
@@ -93,6 +86,14 @@ function doPost(e) {
 
     sheet.appendRow(row);
 
+    // 5. Send Wati WhatsApp Template Notification to Candidate (Secure Server-side Call)
+    try {
+      sendWatiTemplateMessage(data.whatsapp, data.name, data.location);
+    } catch (watiError) {
+      // Log errors but do not crash the registration response
+      Logger.log("WATI WhatsApp Error: " + watiError.toString());
+    }
+
     return ContentService.createTextOutput(JSON.stringify({
       success: true,
       message: "Application submitted successfully",
@@ -119,6 +120,48 @@ function uploadFileToFolder(folder, base64Data, fileName, mimeType) {
   file.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.VIEW);
   
   return file.getUrl();
+}
+
+// Secure helper function to call Wati API V3 template messaging
+function sendWatiTemplateMessage(recipientNumber, name, location) {
+  // Format phone number: remove non-digits, prepend 91 for India if 10-digit number
+  var cleanNumber = recipientNumber.replace(/\D/g, '');
+  if (cleanNumber.length === 10) {
+    cleanNumber = "91" + cleanNumber;
+  }
+
+  var url = WATI_API_ENDPOINT + "/api/ext/v3/messageTemplates/send";
+  
+  var payload = {
+    "template_name": WATI_TEMPLATE_NAME,
+    "broadcast_name": "Model Casting Submission",
+    "recipients": [
+      {
+        "phone_number": cleanNumber
+      }
+    ],
+    "channel": WATI_CHANNEL,
+    "parameters": [
+      { "name": "name", "value": name },
+      { "name": "location", "value": location },
+      { "name": "1", "value": name }, // Positional fallback
+      { "name": "2", "value": location } // Positional fallback
+    ]
+  };
+
+  var options = {
+    "method": "post",
+    "contentType": "application/json",
+    "headers": {
+      "Authorization": "Bearer " + WATI_BEARER_TOKEN
+    },
+    "payload": JSON.stringify(payload),
+    "muteHttpExceptions": true
+  };
+
+  var response = UrlFetchApp.fetch(url, options);
+  Logger.log("WATI API Response Code: " + response.getResponseCode());
+  Logger.log("WATI API Response Body: " + response.getContentText());
 }
 
 function doOptions(e) {

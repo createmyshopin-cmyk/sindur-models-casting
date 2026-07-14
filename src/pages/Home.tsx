@@ -14,6 +14,7 @@ import { StepTimeline } from '../components/StepTimeline';
 import { Success } from '../components/Success';
 import { submitApplication } from '../services/google';
 import logoImg from '../assets/logo.png';
+import { sendWatiMessage } from '../services/wati';
 
 // Validation Schema
 const registrationSchema = z.object({
@@ -228,6 +229,13 @@ export const Home: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 350));
 
       if (result.success) {
+        // Trigger Wati WhatsApp Message (as client-side fallback)
+        try {
+          await sendWatiMessage(data.whatsapp, data.name, data.location);
+        } catch (watiError) {
+          console.warn('Wati client message skip/fail:', watiError);
+        }
+
         if (result.message && result.message.startsWith('Demo Mode')) {
           toast.success(result.message, { duration: 6000 });
         } else {
