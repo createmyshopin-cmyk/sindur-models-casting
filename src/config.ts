@@ -4,5 +4,5 @@ export const GOOGLE_SCRIPT_URL: string = "https://script.google.com/macros/s/AKf
 export const WATI_API_ENDPOINT: string = "https://live-mt-server.wati.io";
 export const WATI_BEARER_TOKEN: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwibmFtZWlkIjoia2VzLnNpbmR1ckBnbWFpbC5jb20iLCJlbWFpbCI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDcvMTQvMjAyNiAwNzoxMjo1NCIsInRlbmFudF9pZCI6IjEwMTkzMDI0IiwiZGJfbmFtZSI6Im10LXByb2QtVGVuYW50cyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFETUlOSVNUUkFUT1IiLCJleHAiOjI1MzQwMjMwMDgwMCwiaXNzIjoiQ2xhcmVfQUkiLCJhdWQiOiJDbGFyZV9BSSJ9.rFu5n7UUeVzvuwjs-ShneQMKdEKS-qGQ4csMNmd7yME";
 export const WATI_API_KEY: string = "wati_0f9a3797-c956-47a1-b18c-1c42a34528c9.bY4NjnBIkjILYMGf-m5DE90i8g4px53_cPvfX6dKNKLgUBHcKRhn4eSxTfBnPXijTq9A5VsoT5NrBTOboFaUAcidduubK657QWQVAf4ZQrJksHie9ROiizofgpwpzn09";
-export const WATI_TEMPLATE_NAME: string = "model_casting";
+export const WATI_TEMPLATE_NAME: string = "model_casting_2026";
 export const WATI_SENDER_NUMBER: string = "+916235905050";
