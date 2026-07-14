@@ -229,9 +229,8 @@ export const Home: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 350));
 
       if (result.success) {
-        // Trigger Wati WhatsApp Message (as client-side fallback)
         try {
-          await sendWatiMessage(data.whatsapp, data.name, data.location);
+          await sendWatiMessage(data.whatsapp, data.name);
         } catch (watiError) {
           console.warn('Wati client message skip/fail:', watiError);
         }

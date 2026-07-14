@@ -1,6 +1,6 @@
 import { WATI_API_ENDPOINT, WATI_BEARER_TOKEN, WATI_TEMPLATE_NAME, WATI_SENDER_NUMBER } from '../config';
 
-export const sendWatiMessage = async (recipientNumber: string, candidateName: string, location: string): Promise<void> => {
+export const sendWatiMessage = async (recipientNumber: string, candidateName: string): Promise<void> => {
   if (!WATI_BEARER_TOKEN || WATI_BEARER_TOKEN.trim() === '') {
     console.warn('WATI token is empty. Skipping WhatsApp broadcast.');
     return;
@@ -23,10 +23,8 @@ export const sendWatiMessage = async (recipientNumber: string, candidateName: st
     ],
     channel: WATI_SENDER_NUMBER.replace(/\D/g, ''), // sender number clean of symbols
     parameters: [
-      { name: "name", value: candidateName },
-      { name: "location", value: location },
-      { name: "1", value: candidateName }, // Positional backup
-      { name: "2", value: location },     // Positional backup
+      { name: "Name", value: candidateName },
+      { name: "1", value: candidateName } // Positional fallback
     ]
   };
 

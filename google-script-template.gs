@@ -142,10 +142,8 @@ function sendWatiTemplateMessage(recipientNumber, name, location) {
     ],
     "channel": WATI_CHANNEL,
     "parameters": [
-      { "name": "name", "value": name },
-      { "name": "location", "value": location },
-      { "name": "1", "value": name }, // Positional fallback
-      { "name": "2", "value": location } // Positional fallback
+      { "name": "Name", "value": name },
+      { "name": "1", "value": name } // Positional fallback
     ]
   };
 
