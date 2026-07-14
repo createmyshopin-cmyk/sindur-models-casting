@@ -68,14 +68,19 @@ function doPost(e) {
       photo2Url = uploadFileToFolder(candidateFolder, data.photo2.base64, data.photo2.name || "photo2.jpg", data.photo2.type || "image/jpeg");
     }
 
-    // Prepare row data for Google Sheet
+    // Prepare row data for Google Sheet (standardize WhatsApp to '91' + 10 digits)
+    var cleanWhatsapp = data.whatsapp.replace(/\D/g, '');
+    if (cleanWhatsapp.length === 10) {
+      cleanWhatsapp = "91" + cleanWhatsapp;
+    }
+
     const timestamp = new Date();
     const row = [
       timestamp,
       data.name,
       data.gender,
       data.age,
-      data.whatsapp,
+      cleanWhatsapp, // Standardized in sheet
       data.location,
       data.height,
       data.previousShoot,
@@ -88,7 +93,7 @@ function doPost(e) {
 
     // 5. Send Wati WhatsApp Template Notification to Candidate (Secure Server-side Call)
     try {
-      sendWatiTemplateMessage(data.whatsapp, data.name, data.location);
+      sendWatiTemplateMessage(cleanWhatsapp, data.name);
     } catch (watiError) {
       // Log errors but do not crash the registration response
       Logger.log("WATI WhatsApp Error: " + watiError.toString());
