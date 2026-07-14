@@ -36,8 +36,7 @@ const registrationSchema = z.object({
   whatsapp: z
     .string()
     .min(1, 'WhatsApp number is required')
-    .regex(/^\d+$/, 'WhatsApp number must contain only numbers')
-    .length(10, 'WhatsApp number must be exactly 10 digits'),
+    .regex(/^(?:\+?91)?[6-9]\d{9}$/, 'WhatsApp number must be a valid 10-digit number (e.g. 9876543210 or +919876543210)'),
   location: z.string().min(2, 'Location is required').trim(),
   height: z.string().min(1, 'Please select your height'),
   previousShoot: z.enum(['yes', 'no', '']).refine((val) => val !== '', 'Please select whether you have done a shoot before'),
@@ -390,7 +389,7 @@ export const Home: React.FC = () => {
                     <FormInput
                       label="WhatsApp Number"
                       type="tel"
-                      placeholder="e.g. 9876543210"
+                      placeholder="e.g. 9876543210 or +919876543210"
                       required
                       register={register('whatsapp')}
                       error={errors.whatsapp?.message}
