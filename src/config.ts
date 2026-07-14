@@ -1,4 +1,4 @@
-export const GOOGLE_SCRIPT_URL: string = "https://script.google.com/macros/s/AKfycbxrqPOJU9fKbn1odihgg0RIbgfFEYdP_8Ue2Nuyvx2d_GqmtZuuDx1JpVemh_LA7yga7w/exec";
+export const GOOGLE_SCRIPT_URL: string = "https://script.google.com/macros/s/AKfycbwEiG-1pBI8qTq3n3-Dk3r5tHBgxE4KtALwt84xBYD4dLXT7KxikK6Il6Ly08lFsH5mLA/exec";
 
 // Wati WhatsApp API credentials & configuration
 export const WATI_API_ENDPOINT: string = "https://live-mt-server.wati.io";
