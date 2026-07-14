@@ -416,7 +416,7 @@ export const Home: React.FC = () => {
                   <>
                     <FormInput
                       label="Location"
-                      placeholder="e.g. Kochi"
+                      placeholder="Enter your location"
                       required
                       register={register('location')}
                       error={errors.location?.message}
