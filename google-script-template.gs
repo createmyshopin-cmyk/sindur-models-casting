@@ -81,7 +81,7 @@ function doPost(e) {
       data.age,
       cleanWhatsapp, // Standardized in sheet
       data.location,
-      data.height,
+      (data.height === "other" && data.customHeight) ? data.customHeight : data.height,
       data.previousShoot,
       data.instagram || "",
       photo1Url,

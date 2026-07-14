@@ -5,6 +5,7 @@ export interface FormData {
   whatsapp: string;
   location: string;
   height: string;
+  customHeight?: string;
   previousShoot: 'yes' | 'no' | '';
   instagram?: string;
   photo1: File | null;

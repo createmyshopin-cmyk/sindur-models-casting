@@ -52,6 +52,15 @@ const registrationSchema = z.object({
     ),
   photo1: z.any().refine((file) => file instanceof File, 'Photo 1 is required'),
   photo2: z.any().refine((file) => file instanceof File, 'Photo 2 is required'),
+  customHeight: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.height === 'other' && (!data.customHeight || data.customHeight.trim() === '')) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Please enter your custom height',
+      path: ['customHeight'],
+    });
+  }
 });
 
 const STEPS: Step[] = [
@@ -65,7 +74,7 @@ const STEPS: Step[] = [
     id: 'model',
     title: 'Model Info',
     subtitle: 'Step 2 of 5 • Tell us your height and location.',
-    fields: ['location', 'height'],
+    fields: ['location', 'height', 'customHeight'],
   },
   {
     id: 'experience',
@@ -161,6 +170,7 @@ export const Home: React.FC = () => {
   const watchedPreviousShoot = watch('previousShoot');
   const watchedPhoto1 = watch('photo1');
   const watchedPhoto2 = watch('photo2');
+  const watchedHeight = watch('height');
   const allFormValues = watch();
 
   const handleNext = async () => {
@@ -220,7 +230,11 @@ export const Home: React.FC = () => {
     }, 120);
 
     try {
-      const result = await submitApplication(data);
+      const submissionData = {
+        ...data,
+        height: data.height === 'other' ? (data.customHeight || '') : data.height
+      };
+      const result = await submitApplication(submissionData);
       clearInterval(progressInterval);
       setSubmitProgress(100);
 
@@ -432,6 +446,7 @@ export const Home: React.FC = () => {
                               {opt}
                             </option>
                           ))}
+                          <option value="other">Other / Custom Height</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-black">
                           <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -445,6 +460,16 @@ export const Home: React.FC = () => {
                         </span>
                       )}
                     </div>
+
+                    {watchedHeight === 'other' && (
+                      <FormInput
+                        label="Custom Height"
+                        placeholder={`e.g. 6'5" or 175 cm`}
+                        required
+                        register={register('customHeight')}
+                        error={errors.customHeight?.message}
+                      />
+                    )}
                   </>
                 )}
 
@@ -520,7 +545,7 @@ export const Home: React.FC = () => {
                         </div>
                         <div>
                           <span className="block text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-0.5">Height</span>
-                          <span className="font-semibold text-black">{allFormValues.height}</span>
+                           <span className="font-semibold text-black">{allFormValues.height === 'other' ? allFormValues.customHeight : allFormValues.height}</span>
                         </div>
                         <div>
                           <span className="block text-[10px] uppercase tracking-wider text-neutral-400 font-semibold mb-0.5">Prior Experience</span>
