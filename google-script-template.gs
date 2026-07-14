@@ -9,8 +9,7 @@
 // Configuration - Main folder name in Google Drive
 const MAIN_FOLDER_NAME = "Sindur Casting Photos";
 
-// Wati WhatsApp API Configuration
-const WATI_API_ENDPOINT = "https://live-mt-server.wati.io/10193024";
+const WATI_API_ENDPOINT = "https://live-mt-server.wati.io";
 const WATI_BEARER_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwibmFtZWlkIjoia2VzLnNpbmR1ckBnbWFpbC5jb20iLCJlbWFpbCI6Imtlcy5zaW5kdXJAZ21haWwuY29tIiwiYXV0aF90aW1lIjoiMDcvMTQvMjAyNiAwNzoxMjo1NCIsInRlbmFudF9pZCI6IjEwMTkzMDI0IiwiZGJfbmFtZSI6Im10LXByb2QtVGVuYW50cyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFETUlOSVNUUkFUT1IiLCJleHAiOjI1MzQwMjMwMDgwMCwiaXNzIjoiQ2xhcmVfQUkiLCJhdWQiOiJDbGFyZV9BSSJ9.rFu5n7UUeVzvuwjs-ShneQMKdEKS-qGQ4csMNmd7yME";
 const WATI_TEMPLATE_NAME = "model_casting";
 const WATI_CHANNEL = "916235905050"; // Sender number (numbers only)
@@ -140,15 +139,15 @@ function sendWatiTemplateMessage(recipientNumber, name, location) {
   var payload = {
     "template_name": WATI_TEMPLATE_NAME,
     "broadcast_name": "Model Casting Submission",
+    "channel": WATI_CHANNEL,
     "recipients": [
       {
-        "phone_number": cleanNumber
+        "phone_number": cleanNumber,
+        "custom_params": [
+          { "name": "Name", "value": name },
+          { "name": "1", "value": name } // Positional fallback
+        ]
       }
-    ],
-    "channel": WATI_CHANNEL,
-    "parameters": [
-      { "name": "Name", "value": name },
-      { "name": "1", "value": name } // Positional fallback
     ]
   };
 

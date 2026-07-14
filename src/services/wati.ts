@@ -12,21 +12,22 @@ export const sendWatiMessage = async (recipientNumber: string, candidateName: st
     cleanNumber = "91" + cleanNumber;
   }
 
-  const url = `${WATI_API_ENDPOINT}/api/ext/v3/messageTemplates/send`;
   const payload = {
     template_name: WATI_TEMPLATE_NAME,
     broadcast_name: "Model Casting Submission",
+    channel: WATI_SENDER_NUMBER.replace(/\D/g, ''), // sender number clean of symbols
     recipients: [
       {
         phone_number: cleanNumber,
+        custom_params: [
+          { name: "Name", value: candidateName },
+          { name: "1", value: candidateName } // Positional fallback
+        ]
       }
-    ],
-    channel: WATI_SENDER_NUMBER.replace(/\D/g, ''), // sender number clean of symbols
-    parameters: [
-      { name: "Name", value: candidateName },
-      { name: "1", value: candidateName } // Positional fallback
     ]
   };
+
+  const url = `${WATI_API_ENDPOINT}/api/ext/v3/messageTemplates/send`;
 
   try {
     const response = await fetch(url, {
